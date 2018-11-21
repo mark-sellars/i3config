@@ -207,4 +207,13 @@ exec --no-startup-id nm-applet
 #client.urgent           $darkred        $darkred        $black          $darkred                $darkred
 #client.background $black
 
+# Lock Screen #
+# Install i3lock and xautolock #
+
+# Keyboard shortcut to lock #
+bindsym $mod+Control+l exec i3lock -c 000000
+
+# Auto lock after 10 min and use black change -c to -i /path/to/file to use a image. is not correct with rotated screen#
+exec --no-startup-id xautolock -time 10 -locker 'i3lock -d -c 000000'
+
 
