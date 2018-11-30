@@ -12,6 +12,7 @@
 #   ## ##  #######    #           #####  #     # #     # #     # #######    #         #####     ###  #####  
 
 # i3 config file
+# Stuff to install: nm-applet volumeicon compton
 
 set $mod Mod4
 
@@ -170,7 +171,7 @@ bar {
 
 # Rotate the damn monitors #
 
-exec --no-startup-id xrandr --output DP-2 --mode 2560x1440 --pos 0x0 --rotate left --output DP-4 --primary --mode 2560x1440 --pos 1140x917 --rotate normal 
+exec --no-startup-id xrandr --output DP-2 --mode 2560x1440 --pos 0x0 --rotate left --output DP-4 --primary --mode 2560x1440 --pos 1440x917 --rotate normal 
 
 ## roate normal for no rotation, My xorg is good to go for the other two not fixing whats no broken ##
 
@@ -202,3 +203,4 @@ exec --no-startup-id virt-manager
 exec --no-startup-id thunderbird
 exec --no-startup-id chromium-browser
 exec --no-startup-id konsole
+exec --no-startup-id volumeicon
