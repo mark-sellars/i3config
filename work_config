@@ -180,8 +180,6 @@ exec --no-startup-id xrandr --output DP-2 --mode 2560x1440 --pos 0x0 --rotate le
 exec --no-startup-id wal -i ~/.config/wall.png >/dev/null
 # Composite manager:
 exec --no-startup-id compton
-# Unclutter makes the mouse invisible after a brief period
-exec --no-startup-id unclutter
 # Network manager applet
 exec --no-startup-id nm-applet
 
