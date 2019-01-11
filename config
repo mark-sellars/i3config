@@ -1,0 +1,290 @@
+# #--Set the fucking monitors---# #
+
+exec --no-startup-id xrandr --output DP-3 --mode 1920x1080 --pos 0x0 --rotate left --output DP-2 --primary --mode 1920x1080 --pos 1080x0 --output DP-1 --mode 1920x1080 --pos 3000x0
+
+#exec --no-startup-id xrandr --output DP-3 --mode 1920x1080 --left-of DP-2 --rotate left --output DP-2 --primary --mode 1920x1080 --pos 0x0 --output DP-1 --mode 1920x1080 --right-of DP-2 --rotate normal
+
+# #---Basic Definitions---# #
+# Needed for i3-gaps
+for_window [class="^.*"] border pixel 2
+gaps inner 5
+gaps outer 0
+set $term --no-startup-id $TERMINAL
+set $mod Mod4
+set $stoprec --no-startup-id dmenurecord kill
+set $shutdown sudo -A shutdown -h now
+set $reboot sudo -A reboot
+set $netrefresh --no-startup-id sudo -A systemctl restart NetworkManager
+
+# #---Dropdown Windows---# #
+
+# First I have a tmux window used for background scripts.
+# I'll later bind this to mod+u.
+for_window [instance="tmuxdd"] floating enable
+for_window [instance="tmuxdd"] resize set 625 400
+for_window [instance="tmuxdd"] move scratchpad
+for_window [instance="tmuxdd"] border pixel 3
+for_window [instance="tmuxdd"] sticky enable
+
+# Then I have a window running R I use for basic arithmetic
+# I'll later bind this to mod+a.
+for_window [instance="dropdowncalc"] floating enable
+for_window [instance="dropdowncalc"] resize set 800 300
+for_window [instance="dropdowncalc"] move scratchpad
+for_window [instance="dropdowncalc"] border pixel 2
+for_window [instance="dropdowncalc"] sticky enable
+
+# #---Starting External Scripts---# #
+# Setting the background:
+exec --no-startup-id feh --bg-scale ~/.config/wall.png
+# Starts dunst for notifications:
+exec --no-startup-id dunst
+# Composite manager:
+exec --no-startup-id xcompmgr
+# Runs the key remapping scripts
+exec --no-startup-id remaps
+# Unclutter makes the mouse invisible after a brief period
+exec --no-startup-id unclutter
+# Run the script to update the mpd i3block on change.
+exec_always --no-startup-id mpdupdate
+# mpd startup
+exec --no-startup-id mpd
+# Podboat automatic queue and download
+exec_always --no-startup-id podentr
+
+# Set Xresources colors:
+set_from_resource $darkblack	color0  #000000
+set_from_resource $black	color8  #000000
+set_from_resource $darkred	color1  #000000
+set_from_resource $red		color9  #000000
+set_from_resource $darkgreen	color2  #000000
+set_from_resource $green	color10 #000000
+set_from_resource $darkyellow	color3  #000000
+set_from_resource $yellow	color11 #000000
+set_from_resource $darkblue	color4  #000000
+set_from_resource $blue		color12 #000000
+set_from_resource $darkmagenta	color5  #000000
+set_from_resource $magenta	color13 #000000
+set_from_resource $darkcyan	color6  #000000
+set_from_resource $cyan		color14 #000000
+set_from_resource $darkwhite	color7  #000000
+set_from_resource $white	color15 #000000
+set $transparent		#00000000
+
+#                       BORDER		BACKGROUND	TEXT		INDICATOR   CHILD_BORDER
+client.focused		$red		$red		$magenta	$darkmagenta		$darkblue
+client.unfocused	$transparent	$blue		$white		$darkblue		$darkblack
+client.focused_inactive	$transparent	$blue		$white		$darkblue		$darkblack
+client.urgent		$darkred	$darkred	$black		$darkred		$darkred
+client.background $black
+
+bar {
+	font pango:mono 10
+	colors {
+			background $darkblack
+			statusline $darkwhite
+			separator $cyan
+			focused_workspace  $blue $darkblue $darkblack
+        		active_workspace   $blue $blue $darkwhite
+      			inactive_workspace $darkblack $darkblack $white
+        		urgent_workspace   $darkblack $darkblack $white
+		}
+	status_command i3blocks
+	position top
+	mode dock
+	modifier None
+}
+
+# #---i3 Stock Bindings---# #
+# Use Mouse+$mod to drag floating windows to their wanted position
+floating_modifier $mod
+
+# start a terminal
+bindsym $mod+Return exec konsole
+
+# kill focused window
+bindsym $mod+Shift+q kill
+
+# start dmenu (a program launcher)
+bindsym $mod+d exec dmenu_run
+
+# change focus
+bindsym $mod+j focus left
+bindsym $mod+k focus down
+bindsym $mod+l focus up
+bindsym $mod+semicolon focus right
+
+# alternatively, you can use the cursor keys:
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+# move focused window
+bindsym $mod+Shift+j move left
+bindsym $mod+Shift+k move down
+bindsym $mod+Shift+l move up
+bindsym $mod+Shift+semicolon move right
+
+# alternatively, you can use the cursor keys:
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+# split in horizontal orientation
+bindsym $mod+h split h
+
+# split in vertical orientation
+bindsym $mod+v split v
+
+# enter fullscreen mode for the focused container
+bindsym $mod+f fullscreen toggle
+
+# #---change container layout (stacked, tabbed, toggle split)---# #
+
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+
+# #---toggle tiling / floating---# #
+
+bindsym $mod+Shift+space floating toggle
+
+# #---change focus between tiling / floating windows---# #
+
+bindsym $mod+space focus mode_toggle
+
+# switch to workspace
+bindsym $mod+1 workspace 1
+bindsym $mod+2 workspace 2
+bindsym $mod+3 workspace 3
+bindsym $mod+4 workspace 4
+bindsym $mod+5 workspace 5
+bindsym $mod+6 workspace 6
+bindsym $mod+7 workspace 7
+bindsym $mod+8 workspace 8
+bindsym $mod+9 workspace 9
+bindsym $mod+0 workspace 10
+
+# move focused container to workspace
+bindsym $mod+Shift+1 move container to workspace 1
+bindsym $mod+Shift+2 move container to workspace 2
+bindsym $mod+Shift+3 move container to workspace 3
+bindsym $mod+Shift+4 move container to workspace 4
+bindsym $mod+Shift+5 move container to workspace 5
+bindsym $mod+Shift+6 move container to workspace 6
+bindsym $mod+Shift+7 move container to workspace 7
+bindsym $mod+Shift+8 move container to workspace 8
+bindsym $mod+Shift+9 move container to workspace 9
+bindsym $mod+Shift+0 move container to workspace 10
+
+# reload the configuration file
+bindsym $mod+Shift+c reload
+# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+bindsym $mod+Shift+r restart
+# exit i3 (logs you out of your X session)
+# bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will e# nd your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+
+# resize window (you can also use the mouse for that)
+mode "resize" {
+        # These bindings trigger as soon as you enter the resize mode
+
+        # Pressing left will shrink the window’s width.
+        # Pressing right will grow the window’s width.
+        # Pressing up will shrink the window’s height.
+        # Pressing down will grow the window’s height.
+        bindsym j resize shrink width 10 px or 10 ppt
+        bindsym k resize grow height 10 px or 10 ppt
+        bindsym l resize shrink height 10 px or 10 ppt
+        bindsym semicolon resize grow width 10 px or 10 ppt
+
+        # same bindings, but for the arrow keys
+        bindsym Left resize shrink width 10 px or 10 ppt
+        bindsym Down resize grow height 10 px or 10 ppt
+        bindsym Up resize shrink height 10 px or 10 ppt
+        bindsym Right resize grow width 10 px or 10 ppt
+
+        # back to normal: Enter or Escape
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+
+bindsym $mod+r mode "resize"
+
+# #---Custom Bindings---# #
+
+bindsym $mod+a                  exec --no-startup-id ddspawn dropdowncalc -f mono:pixelsize=24
+
+bindsym $mod+Ctrl+l		exec --no-startup-id lockscreen
+
+bindsym $mod+b			bar mode toggle
+
+bindsym $mod+Shift+g		exec --no-startup-id google-chrome-stable
+
+bindsym $mod+u                  exec --no-startup-id ddspawn tmuxdd
+
+bindsym $mod+Shift+v		exec virt-manager
+
+# #---Resize Windows Vim Style---# #
+
+bindsym $mod+Shift+y            exec --no-startup-id i3resize left
+
+bindsym $mod+Shift+u            exec --no-startup-id i3resize down
+
+bindsym $mod+Shift+i            exec --no-startup-id i3resize up
+
+bindsym $mod+Shift+o            exec --no-startup-id i3resize right
+
+bindsym $mod+z                  gaps outer current plus 5
+bindsym $mod+Shift+z            gaps outer current minus 5
+
+bindsym $mod+Shift+e		exec --no-startup-id prompt "Exit i3?" "i3-msg exit"
+
+# #----------------# #
+
+bindsym $mod+Shift+x		exec --no-startup-id prompt "Shutdown computer?" "$shutdown"
+
+bindsym $mod+Tab		workspace back_and_forth
+
+for_window [class="Pinentry"] sticky enable
+for_window [class="sent"] border pixel 0px
+for_window [window_role="GtkFileChooserDialog"] resize shrink height 10 px
+for_window [title="Default - Wine desktop"] floating enable
+
+# #---crap to start on login---# #
+
+exec --no-startup-id google-chrome-stable
+exec --no-startup-id /usr/bin/telegram-desktop
+
+# Bindings to make the webcam float and stick.
+for_window [title="mpvfloat"] floating enable
+for_window [title="mpvfloat"] sticky enable
+for_window [title="mpvfloat"] border pixel 0
+no_focus [title="mpvfloat"]
+
+# #---Function Buttons---# #
+bindsym $mod+F1		exec --no-startup-id zathura ~/.config/i3/i3_guide.pdf
+bindsym $mod+F2		restart
+bindsym $mod+F3		exec --no-startup-id displayselect
+bindsym $mod+F4		exec --no-startup-id prompt "Hibernate computer?" "$hibernate"
+bindsym $mod+F5		exec --no-startup-id $netrefresh
+bindsym $mod+F6		exec --no-startup-id $term -e transmission-remote-cli
+bindsym $mod+F7		exec --no-startup-id td-toggle
+bindsym $mod+F8		exec --no-startup-id ~/.config/mutt/etc/mailsync.sh
+bindsym $mod+F9		exec --no-startup-id dmenumount
+bindsym $mod+F10	exec --no-startup-id dmenuumount
+bindsym $mod+F11	exec --no-startup-id ducksearch
+bindsym $mod+F12	exec $term -e sudo -A wifi-menu
+
+# #---Media Keys---# #
+
+# Volume keys
+bindsym $mod+plus		exec --no-startup-id lmc up 5
+bindsym $mod+Shift+plus		exec --no-startup-id lmc up 15
+bindsym $mod+minus 		exec --no-startup-id lmc down 5
+bindsym $mod+Shift+minus	exec --no-startup-id lmc down 15
+bindsym $mod+less 		exec --no-startup-id lmc prev
+bindsym $mod+Shift+less		exec --no-startup-id lmc replay
+bindsym $mod+greater		exec --no-startup-id lmc next
+bindsym $mod+Shift+greater	exec --no-startup-id lmc next
